@@ -4,6 +4,7 @@ import numpy as np
 import random
 import os 
 import hopsworks
+from gradio_datetimerange import DateTimeRange
 
 from datetime import datetime, timedelta
 now = datetime.now()
@@ -26,6 +27,8 @@ print(air_quality_df)
 
 with gr.Blocks() as demo:
     gr.Markdown("Helsingborg Air Quality Forecast")
-    gr.LinePlot(air_quality_df, x="date", y="pm25")
+    daterange = DateTimeRange(["now - 24h", "now"])
+    plot = gr.LinePlot(air_quality_df, x="date", y="pm25")
+    daterange.bind([plot])
 
 demo.launch()   
