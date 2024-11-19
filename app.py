@@ -1,34 +1,37 @@
-import gradio as gr
+import streamlit as st
 import pandas as pd
 import numpy as np
-import random
-import os 
+
+st.title('Lahore Air Quality!')
+st.subheader('Particle matter, diameter < 2.5 micrometers (PM2.5)')
+
+### Load data
+
+import datetime
+import pandas as pd
 import hopsworks
-# from gradio_datetimerange import DateTimeRange
+import datetime 
+from functions import util
+import os
+import pandas as pd
+import modal
 
-from datetime import datetime, timedelta
-now = datetime.now()
+app = modal.App('scheduler')
+volume = modal.Volume.from_name("my-volume")
 
-api_key = os.getenv('HOPSWORKS_API_KEY')
-project_name = os.getenv('HOPSWORKS_PROJECT')
+@app.function(schedule=modal.Period(seconds=10))
+def update():
+    print('Updating...')
+    
 
-project = hopsworks.login(project=project_name, api_key_value=api_key)
-fs = project.get_feature_store() 
 
-air_quality_fg = fs.get_feature_group(
-    name='air_quality',
-    version=1,
-)
-air_quality_df = air_quality_fg.read()
-air_quality_df
 
-print(air_quality_df.info())
-print(air_quality_df)
+if __name__ == "__main__":
+    if "df" not in st.session_state:
+        st.session_state.df = pd.DataFrame(np.random.randn(20, 2), columns=["x", "y"])
+    else:
+        st.session_state.df = pd.DataFrame(
+            np.random.randn(20, 3),
+            columns=['a', 'b', 'c'])
 
-with gr.Blocks() as demo:
-    gr.Markdown("Helsingborg Air Quality Forecast")
-    # daterange = DateTimeRange(["now - 24h", "now"])
-    plot = gr.LinePlot(air_quality_df, x="date", y="pm25")
-    # daterange.bind([plot])
-
-demo.launch()   
+    st.line_chart(st.session_state.df)
