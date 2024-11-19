@@ -11,13 +11,13 @@ import datetime
 import hopsworks
 from functions import util
 import os
+import pickle
 
 if __name__ == "__main__":
-    if "df" not in st.session_state:
-        st.session_state.df = pd.DataFrame(np.random.randn(20, 2), columns=["x", "y"])
-    else:
-        st.session_state.df = pd.DataFrame(
-            np.random.randn(20, 3),
-            columns=['a', 'b', 'c'])
+ 
+    pickle_file_path = 'air_quality_df.pkl'
 
-    st.line_chart(st.session_state.df)
+    with open(pickle_file_path, 'rb') as file:
+        st.session_state.df = pickle.load(file)
+
+    st.line_chart(st.session_state.df,x='date',y='pm25')
