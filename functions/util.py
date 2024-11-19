@@ -15,6 +15,10 @@ import hopsworks
 import hsfs
 from pathlib import Path
 
+import sys
+print(sys.path)
+
+
 def get_historical_weather(city, start_date,  end_date, latitude, longitude):
     # latitude, longitude = get_city_coordinates(city)
 
