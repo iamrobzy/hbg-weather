@@ -2,5 +2,4 @@
 #gradio
 pandas
 modal
-#hopsworks
 streamlit
