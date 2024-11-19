@@ -8,23 +8,9 @@ st.subheader('Particle matter, diameter < 2.5 micrometers (PM2.5)')
 ### Load data
 
 import datetime
-import pandas as pd
 import hopsworks
-import datetime 
 from functions import util
 import os
-import pandas as pd
-import modal
-
-app = modal.App('scheduler')
-volume = modal.Volume.from_name("my-volume")
-
-@app.function(schedule=modal.Period(seconds=10))
-def update():
-    print('Updating...')
-    
-
-
 
 if __name__ == "__main__":
     if "df" not in st.session_state:
