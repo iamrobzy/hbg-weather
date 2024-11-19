@@ -20,4 +20,4 @@ if __name__ == "__main__":
     with open(pickle_file_path, 'rb') as file:
         st.session_state.df = pickle.load(file)
 
-    st.line_chart(st.session_state.df,x='date',y='pm25')
+    st.line_chart(st.session_state.df,x='date',y='pm25',width=1400,use_container_width=False)
