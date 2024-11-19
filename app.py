@@ -26,14 +26,6 @@ print(air_quality_df)
 
 with gr.Blocks() as demo:
     gr.Markdown("Helsingborg Air Quality Forecast")
-    start_date = gr.Date(label="Start Date", value=(now - timedelta(days=30)).strftime('%Y-%m-%d'))
-    end_date = gr.Date(label="End Date", value=now.strftime('%Y-%m-%d'))
-    
-    def filter_data(start, end):
-        mask = (air_quality_df['date'] >= start) & (air_quality_df['date'] <= end)
-        return air_quality_df.loc[mask]
-    
-    filtered_data = gr.DataFrame(filter_data, inputs=[start_date, end_date], outputs="dataframe")
-    gr.LinePlot(filtered_data, x="date", y="pm25")
+    gr.LinePlot(air_quality_df, x="date", y="pm25")
 
-demo.launch()
+demo.launch()   
