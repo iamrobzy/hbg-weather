@@ -74,4 +74,4 @@ def get_merged_dataframe():
     # Drop the individual columns after merging
     combined_df = combined_df.drop(columns=['predicted_pm25_x', 'predicted_pm25_y'])
 
-print(get_merged_dataframe())
+    return combined_df

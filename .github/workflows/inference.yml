@@ -1,9 +1,9 @@
-name: update-df
+name: inference
 
 on:
   workflow_dispatch:
-    schedule:
-    - cron: '*/5 * * * *'
+      schedule:
+      - cron: '*/5 * * * *'
 
 jobs:
   schedule_pipelines:
@@ -31,4 +31,4 @@ jobs:
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
-          python infer.py
+          python feature_pipeline.py
