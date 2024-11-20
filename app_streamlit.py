@@ -45,15 +45,4 @@ st.subheader('Unit: PM25 - particle matter of diameter < 2.5 micrometers')
 
 # Plotting
 fig = figure.plot(df)
-st.plotly_chart(fig)
-
-# Scheduling
-
-HF_TOKEN = os.getenv("HF_TOKEN")
-def restart():
-    restart_space("Robzy/hgb-weather", token=HF_TOKEN)
-
-time_start = datetime.now()
-scheduler = BackgroundScheduler()
-job = scheduler.add_job(restart, "interval", minutes=2)
-scheduler.start()
+st.plotly_chart(fig, use_container_width=True)

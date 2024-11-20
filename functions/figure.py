@@ -86,13 +86,6 @@ def plot(df, n=10):
 
     # x range start BEFORE today
     k = 4
-    # Get the screen dimensions
-    screen_width = st.get_option("browser.clientWidth")
-    screen_height = st.get_option("browser.clientHeight")
-
-    # Set the width and height to take up nearly the entire screen
-    fig_width = screen_width * 0.8
-    fig_height = screen_height * 0.65
 
     fig.update_layout(
         shapes=shapes,  # Add the background rectangles
@@ -115,8 +108,8 @@ def plot(df, n=10):
             range=[1, np.log10(500)]  # Set y-axis range to be positive
         ),
         autosize=True,
-        width=fig_width,
-        height=fig_height,
+        width=2100,
+        height=900,
         hoverlabel=dict(
             font_size=20  # Increase hover label font size
         )
