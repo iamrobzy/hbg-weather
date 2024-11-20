@@ -3,6 +3,7 @@ name: feature
 on:
   schedule:
     - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   schedule_pipelines:
