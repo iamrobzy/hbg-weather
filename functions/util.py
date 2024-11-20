@@ -296,12 +296,20 @@ def check_file_path(file_path):
         print(f"File successfully found at the path: {file_path}")
 
 def backfill_predictions_for_monitoring(weather_fg, air_quality_df, monitor_fg, model):
-    features_df = weather_fg.read()
-    features_df = features_df.sort_values(by=['date'], ascending=True)
+    weather_df = weather_fg.read()
+    weather_df = weather_df.sort_values(by=['date'], ascending=True)
+    weather_df['date'] = weather_df['date'].dt.tz_convert(None).astype('datetime64[ns]')
+    air_quality_df_filter = air_quality_df[['date', 'past_air_quality']]
+    monitor_fg_filter = monitor_fg.read()[['date','past_air_quality']]
+    combined_df = pd.concat([air_quality_df_filter, monitor_fg_filter])
+    combined_df['date'] = pd.to_datetime(combined_df['date'], utc=True)
+    combined_df['date'] = combined_df['date'].dt.tz_convert(None).astype('datetime64[ns]')
+    features_df = pd.merge(weather_df, combined_df, on='date', how='left')
+    
     features_df = features_df.tail(10)
-    features_df['predicted_pm25'] = model.predict(features_df[['temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']])
+    features_df['predicted_pm25'] = model.predict(features_df[['past_air_quality','temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']])
     air_quality_df['date'] = pd.to_datetime(air_quality_df['date'])
-    features_df['date'] = features_df['date'].dt.tz_convert(None).astype('datetime64[ns]')
+    # features_df['date'] = features_df['date'].dt.tz_convert(None).astype('datetime64[ns]')
     
     df = pd.merge(features_df, air_quality_df[['date','pm25','street','country']], on="date")
     df['days_before_forecast_day'] = 1
