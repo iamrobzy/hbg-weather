@@ -2,12 +2,27 @@ import datetime
 import pandas as pd
 import hopsworks
 import os
+import datetime
+from xgboost import XGBRegressor
+import pandas as pd
+import hopsworks
+import os
 
 os.environ['HOPSWORKS_PROJECT'] = os.getenv('HOPSWORKS_PROJECT')
 os.environ['HOPSWORKS_API_KEY'] = os.getenv('HOPSWORKS_API_KEY')
 
 project = hopsworks.login()
 fs = project.get_feature_store() 
+
+project = hopsworks.login()
+fs = project.get_feature_store() 
+
+mr = project.get_model_registry()
+retrieved_model = mr.get_model(
+    name="air_quality_xgboost_model",
+    version=1,
+)
+saved_model_dir = retrieved_model.download()
 
 
 def get_merged_dataframe():
@@ -26,28 +41,37 @@ def get_merged_dataframe():
         version=1,
     )
 
-    selected_features = air_quality_fg.select_all(['pm25'])
+    weather_fg = fs.get_feature_group(
+    name='weather',
+    version=1,
+    )   
+
+    retrieved_xgboost_model = XGBRegressor()
+    retrieved_xgboost_model.load_model(saved_model_dir + "/model.json")
+
+
+    selected_features = air_quality_fg.select_all(['pm25', 'past_air_quality']).join(weather_fg.select(['temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']), on=['city'])
     selected_features = selected_features.read()
+    selected_features['date'] = pd.to_datetime(selected_features['date'], utc=True).dt.tz_convert(None).astype('datetime64[ns]')
+    
     predicted_data = monitor_fg.read()
-
-    #filter columns
-    selected_features = selected_features[['date', 'pm25']]
     predicted_data = predicted_data[['date','predicted_pm25']]
-    #predicted_data = predicted_data.rename(columns={"predicted_pm25" : "pm25"})
-    predicted_data = predicted_data.sort_values(by=['date'], ascending=True)
-
-    #merge the dataframes
-    selected_features = selected_features.reset_index(drop=True)
-    predicted_data = predicted_data.reset_index(drop=True)
-
-    outcome_df = selected_features[['date', 'pm25']]
-    preds_df =  predicted_data[['date', 'predicted_pm25']]
+    predicted_data['date'] = predicted_data['date'].dt.tz_convert(None).astype('datetime64[ns]')
+    predicted_data = predicted_data.sort_values(by=['date'], ascending=True).reset_index(drop=True)
 
 
+    #get historical predicted pm25
+    selected_features['predicted_pm25'] = retrieved_xgboost_model.predict(selected_features[['past_air_quality','temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']])
 
-    combined_df = pd.concat([selected_features, predicted_data], axis=0, ignore_index=True)
+    #merge data
+    selected_features = selected_features[['date', 'pm25', 'predicted_pm25']]
+    combined_df = pd.merge(selected_features, predicted_data,on='date', how='outer')
     combined_df['date'] =  pd.to_datetime(combined_df['date'], utc=True).dt.tz_convert(None).astype('datetime64[ns]')
 
-    return combined_df
+    # Combine the predicted_pm25_x and predicted_pm25_y columns into one
+    combined_df['predicted_pm25'] = combined_df['predicted_pm25_x'].combine_first(combined_df['predicted_pm25_y'])
+
+    # Drop the individual columns after merging
+    combined_df = combined_df.drop(columns=['predicted_pm25_x', 'predicted_pm25_y'])
 
 print(get_merged_dataframe())

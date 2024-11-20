@@ -51,9 +51,9 @@ st.plotly_chart(fig)
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 def restart():
-    restart_space("Robzy/hgb-weather", token=HF_TOKEN)
+    restart_space("davanstrien/restart", token=HF_TOKEN)
 
 time_start = datetime.now()
 scheduler = BackgroundScheduler()
 job = scheduler.add_job(restart, "interval", minutes=2)
-scheduler.start()
+scheduler.start()   

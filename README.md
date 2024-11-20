@@ -12,7 +12,7 @@ short_description: Air quality forecasting for Lahore, Pakistan!
 
 # Air Quality Monitoring for Lahore, Pakistan
 
-### Dashboard link: https://huggingface.co/spaces/Robzy/hbg-weather
+### [Dashboard link](https://huggingface.co/spaces/Robzy/hbg-weather)
 
 # Architecture & pipeline
 
@@ -54,3 +54,9 @@ Weather data features:
 HuggingFace's Streamlit Spaces is used to display the hindcast, forecast, and real air quality using an interactive line graph. GitHub Actions is used to call the feature and inference pipeline daily by levraging schedulin.
 
 Note that backfilling, feature group creation and model training is only performed once
+
+
+
+### Aknowledments
+
+* [HuggingFace restart scheduler](https://huggingface.co/spaces/davanstrien/restart/blob/main/app.py)
