@@ -1,8 +1,7 @@
 name: inference
 
 on:
-  workflow_dispatch:
-      schedule:
+  schedule:
       - cron: '*/5 * * * *'
 
 jobs:
