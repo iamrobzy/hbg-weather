@@ -1,0 +1,25 @@
+name: rebuild-hf
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # Run every 5 minutes (minimum allowed)
+  workflow_dispatch: # Enable manual triggers for debugging
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Debug rebuild - Update a dummy file
+        run: echo "$(date)" >> dummy.txt
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add dummy.txt
+          git commit -m "Debug Rebuild Trigger: $(date)"
+          git push github

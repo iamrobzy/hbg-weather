@@ -7,6 +7,21 @@ from functions import figure, util
 import os
 import pickle
 import plotly.express as px
+import json
+
+# Set up
+api_key = os.getenv('HOPSWORKS_API_KEY')
+project_name = os.getenv('HOPSWORKS_PROJECT')
+project = hopsworks.login(project=project_name, api_key_value=api_key)
+fs = project.get_feature_store() 
+secrets = util.secrets_api(project.name)
+
+feature_view = fs.get_feature_view(
+    name='air_quality_fv',
+    version=1,
+)
+df = feature_view.get_batch_data(start_time=None, end_time=None, read_options=None).sort_values(by='date')
+today = datetime.datetime.now() - datetime.timedelta(0)
 
 
 st.set_page_config(
