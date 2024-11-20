@@ -109,7 +109,7 @@ def plot(df, n=10):
         ),
         autosize=True,
         width=2100,
-        height=900,
+        height=750,
         hoverlabel=dict(
             font_size=20  # Increase hover label font size
         )

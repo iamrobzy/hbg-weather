@@ -3,3 +3,4 @@
 .env
 .cache.sqlite
 __pycache__/
+debug.ipynb

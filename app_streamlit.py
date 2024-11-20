@@ -9,8 +9,6 @@ import pickle
 import plotly.express as px
 import json
 from datetime import datetime
-from apscheduler.schedulers.background import BackgroundScheduler
-from huggingface_hub import restart_space
 import os
 
 

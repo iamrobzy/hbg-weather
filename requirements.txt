@@ -21,9 +21,6 @@ matplotlib==3.8.3
 
 hopsworks
 pandas
-#modal
 streamlit
 plotly
-
-apscheduler
 huggingface_hub
