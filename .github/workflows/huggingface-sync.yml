@@ -1,8 +1,8 @@
 name: Sync to Hugging Face hub
 
 on:
-  schedule:
-    - cron: '*/5 * * * *' # Run every 5 minutes (minimum allowed)
+schedule:
+    - cron: '0 12 * * *' # Run every day at noon
   workflow_dispatch:
 
 jobs:
