@@ -84,10 +84,13 @@ def plot(df, n=10):
         line=dict(width=3)     # Make the line thicker
     )
 
+    # x range start BEFORE today
+    k = 4
+
     fig.update_layout(
         shapes=shapes,  # Add the background rectangles
         xaxis=dict(
-            range=[x_values.iloc[-n], x_values.iloc[-1]],  # Dynamically set the range
+            range=[x_values.iloc[-n-k], x_values.iloc[-1]],  # Dynamically set the range
             title=dict(
                 text="Date",  # Set x-axis label
                 font=dict(size=label_font_size)  # Increase font size for the x-axis label

@@ -19,8 +19,9 @@ st.set_page_config(
     }
 )
 
-st.title('Lahore Air Quality!')
-st.subheader('Particle matter, diameter < 2.5 micrometers (PM2.5)')
+st.title('Lahore Air Quality')
+st.subheader('Forecast and hindcast')
+st.subheader('Unit: PM25 - particle matter of diameter < 2.5 micrometers')
 
 #pickle_file_path = 'air_quality_df.pkl'
 pickle_file_path = 'outcome_df.pkl'
