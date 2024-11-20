@@ -1,4 +1,5 @@
 import datetime
+from xgboost import XGBRegressor
 import pandas as pd
 import hopsworks
 import os
@@ -7,6 +8,13 @@ os.environ["HOPSWORKS_API_KEY"] = "Q1hpGzlHnrKrf4g1.kxP3EPqrvulBl7XQ8oRJE3tFaxhg
 
 project = hopsworks.login()
 fs = project.get_feature_store() 
+
+mr = project.get_model_registry()
+retrieved_model = mr.get_model(
+    name="air_quality_xgboost_model",
+    version=1,
+)
+saved_model_dir = retrieved_model.download()
 
 
 def get_merged_dataframe():
@@ -24,6 +32,16 @@ def get_merged_dataframe():
         name='air_quality',
         version=1,
     )
+
+    weather_fg = fs.get_feature_group(
+    name='weather',
+    version=1,
+    )   
+
+    retrieved_xgboost_model = XGBRegressor()
+    retrieved_xgboost_model.load_model(saved_model_dir + "/model.json")
+
+
     selected_features = air_quality_fg.select_all(['pm25', 'past_air_quality']).join(weather_fg.select(['temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']), on=['city'])
     selected_features = selected_features.read()
     selected_features['date'] = pd.to_datetime(selected_features['date'], utc=True).dt.tz_convert(None).astype('datetime64[ns]')
