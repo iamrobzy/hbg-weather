@@ -45,6 +45,7 @@ def get_merged_dataframe():
     selected_features = air_quality_fg.select_all(['pm25', 'past_air_quality']).join(weather_fg.select(['temperature_2m_mean', 'precipitation_sum', 'wind_speed_10m_max', 'wind_direction_10m_dominant']), on=['city'])
     selected_features = selected_features.read()
     selected_features['date'] = pd.to_datetime(selected_features['date'], utc=True).dt.tz_convert(None).astype('datetime64[ns]')
+    selected_features = selected_features.tail(100)
     
     predicted_data = monitor_fg.read()
     predicted_data = predicted_data[['date','predicted_pm25']]
