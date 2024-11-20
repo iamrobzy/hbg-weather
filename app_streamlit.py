@@ -39,12 +39,12 @@ st.subheader('Forecast and hindcast')
 st.subheader('Unit: PM25 - particle matter of diameter < 2.5 micrometers')
 
 #pickle_file_path = 'air_quality_df.pkl'
-pickle_file_path = 'outcome_df.pkl'
+# pickle_file_path = 'outcome_df.pkl'
 
-with open(pickle_file_path, 'rb') as file:
-    st.session_state.df = pickle.load(file).sort_values(by="date")
+# with open(pickle_file_path, 'rb') as file:
+#     st.session_state.df = pickle.load(file).sort_values(by="date")
 
-fig = figure.plot(st.session_state.df)
+fig = figure.plot(df)
 
 # Render the chart in Streamlit
 st.plotly_chart(fig)
