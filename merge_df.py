@@ -42,6 +42,12 @@ def get_merged_dataframe():
     combined_df = pd.merge(selected_features, predicted_data,on='date', how='outer')
     combined_df['date'] =  pd.to_datetime(combined_df['date'], utc=True).dt.tz_convert(None).astype('datetime64[ns]')
 
+    # Combine the predicted_pm25_x and predicted_pm25_y columns into one
+    combined_df['predicted_pm25'] = combined_df['predicted_pm25_x'].combine_first(combined_df['predicted_pm25_y'])
+
+    # Drop the individual columns after merging
+    combined_df = combined_df.drop(columns=['predicted_pm25_x', 'predicted_pm25_y'])
+
     return combined_df
 
 print(get_merged_dataframe())
