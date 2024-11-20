@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import datetime
 import hopsworks
-from functions import figure, util
+from functions import figure, retrieve
 import os
 import pickle
 import plotly.express as px
@@ -13,17 +13,18 @@ import os
 
 
 # Real data
-#df = get_merged_dataframe()
+today = datetime.today().strftime('%Y-%m-%d')
+df = retrieve.get_merged_dataframe()
+n = len(df[df['pm25'].isna()]) - 1
 
 # Dummmy data
-size = 400
-data = {
-    'date': pd.date_range(start='2023-01-01', periods=size, freq='D'),
-    'pm25': np.random.randint(50, 150, size=size),
-    'predicted_pm25': np.random.randint(50, 150, size=size)
-}
-df = pd.DataFrame(data)
-
+# size = 400
+# data = {
+#     'date': pd.date_range(start='2023-01-01', periods=size, freq='D'),
+#     'pm25': np.random.randint(50, 150, size=size),
+#     'predicted_pm25': np.random.randint(50, 150, size=size)
+# }
+# df = pd.DataFrame(data)
 
 # Page configuration
 
@@ -42,5 +43,5 @@ st.subheader('Forecast and hindcast')
 st.subheader('Unit: PM25 - particle matter of diameter < 2.5 micrometers')
 
 # Plotting
-fig = figure.plot(df)
+fig = figure.plot(df, n=n)
 st.plotly_chart(fig, use_container_width=True)
