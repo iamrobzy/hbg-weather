@@ -14,9 +14,6 @@ os.environ['HOPSWORKS_API_KEY'] = os.getenv('HOPSWORKS_API_KEY')
 project = hopsworks.login()
 fs = project.get_feature_store() 
 
-project = hopsworks.login()
-fs = project.get_feature_store() 
-
 mr = project.get_model_registry()
 retrieved_model = mr.get_model(
     name="air_quality_xgboost_model",

@@ -38,7 +38,9 @@ today
 
 # os.environ["HOPSWORKS_API_KEY"] = ""
 
-project = hopsworks.login()
+api_key = os.getenv('HOPSWORKS_API_KEY')
+project_name = os.getenv('HOPSWORKS_PROJECT')
+project = hopsworks.login(project=project_name, api_key_value=api_key)
 fs = project.get_feature_store() 
 
 secrets = util.secrets_api(project.name)
