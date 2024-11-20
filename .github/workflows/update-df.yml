@@ -3,7 +3,7 @@ name: update-df
 on:
   workflow_dispatch:
     schedule:
-    - cron: '11 6 * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   schedule_pipelines:

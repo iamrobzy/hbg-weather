@@ -8,21 +8,26 @@ import os
 import pickle
 import plotly.express as px
 import json
+from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+from huggingface_hub import restart_space
+import os
 
-# Set up
-api_key = os.getenv('HOPSWORKS_API_KEY')
-project_name = os.getenv('HOPSWORKS_PROJECT')
-project = hopsworks.login(project=project_name, api_key_value=api_key)
-fs = project.get_feature_store() 
-secrets = util.secrets_api(project.name)
 
-feature_view = fs.get_feature_view(
-    name='air_quality_fv',
-    version=1,
-)
-df = feature_view.get_batch_data(start_time=None, end_time=None, read_options=None).sort_values(by='date')
-today = datetime.datetime.now() - datetime.timedelta(0)
+# Real data
+#df = get_merged_dataframe()
 
+# Dummmy data
+size = 400
+data = {
+    'date': pd.date_range(start='2023-01-01', periods=size, freq='D'),
+    'pm25': np.random.randint(50, 150, size=size),
+    'predicted_pm25': np.random.randint(50, 150, size=size)
+}
+df = pd.DataFrame(data)
+
+
+# Page configuration
 
 st.set_page_config(
     page_title="Air Quality Prediction",
@@ -38,13 +43,17 @@ st.title('Lahore Air Quality')
 st.subheader('Forecast and hindcast')
 st.subheader('Unit: PM25 - particle matter of diameter < 2.5 micrometers')
 
-#pickle_file_path = 'air_quality_df.pkl'
-# pickle_file_path = 'outcome_df.pkl'
-
-# with open(pickle_file_path, 'rb') as file:
-#     st.session_state.df = pickle.load(file).sort_values(by="date")
-
+# Plotting
 fig = figure.plot(df)
-
-# Render the chart in Streamlit
 st.plotly_chart(fig)
+
+# Scheduling
+
+HF_TOKEN = os.getenv("HF_TOKEN")
+def restart():
+    restart_space("Robzy/hgb-weather", token=HF_TOKEN)
+
+time_start = datetime.now()
+scheduler = BackgroundScheduler()
+job = scheduler.add_job(restart, "interval", minutes=2)
+scheduler.start()

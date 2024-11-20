@@ -1,8 +1,8 @@
 import streamlit as st
 import datetime
+import numpy as np
 
 today = datetime.date.today()
-
 
 def plot(df, n=10):
     import plotly.express as px
@@ -104,7 +104,8 @@ def plot(df, n=10):
             ),
             type="log",  # Set y-axis to logarithmic scale
             fixedrange=True,  # Disable vertical panning/zooming
-            tickfont=dict(size=ticks_font_size)  # Increase font size for y-axis numbers
+            tickfont=dict(size=ticks_font_size),  # Increase font size for y-axis numbers
+            range=[1, np.log10(500)]  # Set y-axis range to be positive
         ),
         autosize=True,
         width=2100,
